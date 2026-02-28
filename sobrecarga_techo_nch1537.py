@@ -19,7 +19,7 @@ st.markdown("""
 # =================================================================
 # 2. ENCABEZADO
 # =================================================================
-st.title("🏠 Sobrecarga de Uso en Techos (NCh 1537:2009)")
+st.title("🏠 Sobrecarga de Uso en Techos (NCh 1537 Of.2009)")
 st.markdown("#### **Determinación de la Carga de Diseño Lr**")
 st.divider()
 
