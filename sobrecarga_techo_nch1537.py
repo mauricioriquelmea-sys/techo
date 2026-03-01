@@ -3,6 +3,9 @@ import streamlit as st
 import numpy as np
 import matplotlib.pyplot as plt
 import math
+import os
+import base64
+from fpdf import FPDF
 
 # =================================================================
 # 1. CONFIGURACIÓN Y ESTILO
@@ -118,7 +121,60 @@ ax.legend()
 st.pyplot(fig)
 
 # =================================================================
-# 7. CIERRE
+# 7. GENERADOR DE PDF PROFESIONAL (NUEVO)
+# =================================================================
+def generar_pdf_techo():
+    pdf = FPDF()
+    pdf.add_page()
+    if os.path.exists("Logo.png"):
+        pdf.image("Logo.png", x=10, y=8, w=33)
+    
+    pdf.set_font("Arial", 'B', 16)
+    pdf.cell(0, 10, "Memoria de Calculo: Sobrecarga de Techo", ln=True, align='C')
+    pdf.set_font("Arial", 'I', 10)
+    pdf.cell(0, 7, "NCh 1537:2009 | Proyectos Estructurales", ln=True, align='C')
+    pdf.ln(15)
+
+    pdf.set_fill_color(240, 240, 240)
+    pdf.set_font("Arial", 'B', 11)
+    pdf.cell(0, 10, " 1. PARAMETROS DE ENTRADA", ln=True, fill=True)
+    pdf.set_font("Arial", '', 10)
+    pdf.cell(0, 8, f" Area Tributaria (AT): {at} m2", ln=True)
+    pdf.cell(0, 8, f" Pendiente del Techo: {pendiente_pct} %", ln=True)
+    pdf.ln(5)
+
+    pdf.set_font("Arial", 'B', 11)
+    pdf.cell(0, 10, " 2. FACTORES DE REDUCCION (Seccion 7.2)", ln=True, fill=True)
+    pdf.set_font("Arial", '', 10)
+    pdf.cell(0, 8, f" Factor R1 (Area): {R1:.2f}", ln=True)
+    pdf.cell(0, 8, f" Factor R2 (Pendiente): {R2:.2f}", ln=True)
+    pdf.ln(5)
+
+    pdf.set_font("Arial", 'B', 11)
+    pdf.cell(0, 10, " 3. RESULTADO FINAL", ln=True, fill=True)
+    pdf.set_font("Arial", 'B', 12)
+    pdf.cell(0, 10, f" SOBRECARGA DE DISENO (Lr): {lr_final:.1f} kgf/m2", ln=True)
+    
+    pdf.set_y(-25)
+    pdf.set_font("Arial", 'I', 8)
+    pdf.cell(0, 10, "Reporte generado por Mauricio Riquelme - Proyectos Estructurales", align='C')
+    return pdf.output()
+
+st.sidebar.markdown("---")
+pdf_bytes = generar_pdf_techo()
+b64 = base64.b64encode(pdf_bytes).decode()
+st.sidebar.markdown(f"""
+    <div style="text-align: center;">
+        <a href="data:application/pdf;base64,{b64}" download="Memoria_Techo_NCh1537.pdf" 
+           style="background-color: #28a745; color: white; padding: 12px 20px; text-decoration: none; 
+           border-radius: 5px; font-weight: bold; display: block;">
+           📥 DESCARGAR REPORTE PDF
+        </a>
+    </div>
+""", unsafe_allow_html=True)
+
+# =================================================================
+# 8. CIERRE
 # =================================================================
 st.markdown("---")
 st.markdown(f"""
